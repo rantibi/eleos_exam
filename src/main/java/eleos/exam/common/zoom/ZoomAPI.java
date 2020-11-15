@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import eleos.exam.common.zoom.requests.MeetingStatusRequest;
 import eleos.exam.common.zoom.responses.MetricsMeetings;
 import eleos.exam.model.Meeting;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpHeaders;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpUriRequest;
@@ -24,6 +25,7 @@ import java.util.List;
 
 
 @Service
+@Slf4j
 public class ZoomAPI {
     private static final String URL = "https://api.zoom.us/v2";
     @Value("${zoom.api-key}")
@@ -63,7 +65,7 @@ public class ZoomAPI {
                     .setHeader(HttpHeaders.AUTHORIZATION, "Bearer " + apiKey).build();
             try (CloseableHttpResponse response = client.execute(request)) {
                 if (response.getStatusLine().getStatusCode() >= 300) {
-                    //TODO: handle request failed
+                    log.error("request failed {}", response);
                     throw new RuntimeException("request failed");
                 }
 
